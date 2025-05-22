@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/bot.py": {
+      "memory": 1024
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/bot.py"
+    }
+  ]
+} 

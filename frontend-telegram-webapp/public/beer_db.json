@@ -1,0 +1,73 @@
+[
+  {
+    "name": "Пиво Harbin Premium Lager светлое, 0.61л",
+    "brand": "HARBIN",
+    "country": "Китай",
+    "volume": "610",
+    "abv": "5",
+    "package": "Стеклянная бутылка",
+    "style": "Американский лагер",
+    "filtration": "Фильтрованное",
+    "imported": "Да",
+    "flavored": "Нет",
+    "description": "",
+    "rating": ""
+  },
+  {
+    "name": "Пиво Guinness Draught темное, 0.44л",
+    "brand": "GUINNESS",
+    "country": "Ирландия",
+    "volume": "440",
+    "color": "Темное",
+    "abv": "4.2",
+    "package": "Банка",
+    "style": "Стаут",
+    "filtration": "Фильтрованное",
+    "imported": "Да",
+    "flavored": "Нет",
+    "description": "",
+    "rating": ""
+  },
+  {
+    "name": "Пиво Corona Extra светлое, 0.355л",
+    "brand": "CORONA",
+    "country": "Мексика",
+    "volume": "355",
+    "abv": "4.5",
+    "package": "Стеклянная бутылка",
+    "style": "Американский лагер",
+    "filtration": "Фильтрованное",
+    "imported": "Да",
+    "flavored": "Нет",
+    "description": "",
+    "rating": ""
+  },
+  {
+    "name": "Пиво Clausthaler Original безалкогольное, 0.5л",
+    "brand": "CLAUSTHALER",
+    "country": "Германия",
+    "volume": "500",
+    "color": "Светлое",
+    "package": "Банка",
+    "style": "Светлый лагер",
+    "filtration": "Фильтрованное",
+    "imported": "Да",
+    "flavored": "Нет",
+    "description": "",
+    "rating": ""
+  },
+  {
+    "name": "Напиток пивной Corona Cero безалкогольный, 0.33л",
+    "brand": "CORONA",
+    "country": "Бельгия",
+    "volume": "330",
+    "color": "Светлое",
+    "package": "Стеклянная бутылка",
+    "style": "Европейский лагер",
+    "filtration": "Фильтрованное",
+    "imported": "Да",
+    "flavored": "Нет",
+    "description": "",
+    "rating": ""
+  }
+] 
