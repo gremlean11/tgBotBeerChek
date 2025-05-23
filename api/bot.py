@@ -9,6 +9,7 @@ import io
 import re
 import requests
 import json
+import base64
 from rapidfuzz import fuzz, process
 from flask import Flask, request
 
@@ -123,14 +124,50 @@ async def webapp_data_handler(update: Update, context: ContextTypes.DEFAULT_TYPE
     try:
         data = update.effective_message.web_app_data.data
         payload = json.loads(data)
+
         if payload.get('action') == 'rate':
             beer_name = payload.get('beer')
             rating = int(payload.get('rating'))
             save_rating(beer_name, rating)
-            await update.effective_message.reply_text(f'Ваша оценка {rating}/10 для "{beer_name}" сохранена!')
+            # We might want to send a message back to the web app here instead of chat
+            # await update.effective_message.reply_text(f'Ваша оценка {rating}/10 для "{beer_name}" сохранена!')
+            # Close web app or send a confirmation message to the web app
+            # update.effective_message.web_app_data.web_app.close()
+            pass # Process rating, possibly send silent confirmation or update web app UI
+        
+        elif payload.get('action') == 'process_photo' and payload.get('image_base64'):
+            image_base64 = payload.get('image_base64')
+            try:
+                image_bytes = base64.b64decode(image_base64)
+                
+                # Process the image bytes (OCR and get beer info)
+                text = ocr_space_recognize(image_bytes)
+                print(f"[DEBUG] Распознанный текст (OCR.Space) from web app: {repr(text)}")
+
+                beer_info = {}
+                if text.strip():
+                     beer_info = get_beer_info(text)
+                     # Update rating with user ratings (if applicable and you want this in web app info)
+                     beer_info['rating'] = get_avg_rating(beer_info.get('name', ''), beer_info.get('rating', 0))
+                else:
+                    beer_info = {"name": "-", "description": "Не удалось распознать текст.", "rating": "-", "reviews": [], "price_quality_ratio": "-"}
+
+                # Format the info (can be simplified for JSON response to web app)
+                # Instead of formatting as text, prepare data structure for web app
+                # For now, let's send a message to the chat as a quick way to see the result
+                response_text = format_beer_info(beer_info)
+                await update.effective_message.reply_text(response_text)
+
+                # In a real scenario, you would send this data back to the web app
+                # update.effective_message.web_app_data.web_app.send_data(json.dumps(beer_info))
+
+            except Exception as photo_e:
+                logger.error(f"Error processing photo from web app: {photo_e}")
+                await update.effective_message.reply_text("Извините, произошла ошибка при обработке фотографии из мини-приложения.")
+
     except Exception as e:
         logger.error(f"Error in webapp_data_handler: {e}")
-        await update.effective_message.reply_text('Ошибка при сохранении оценки.')
+        await update.effective_message.reply_text('Ошибка при обработке данных из мини-приложения.')
 
 def normalize(text):
     return re.sub(r'[^a-zA-Zа-яА-Я0-9 ]', '', text.lower())
