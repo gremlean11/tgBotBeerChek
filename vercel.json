@@ -4,10 +4,37 @@
       "memory": 1024
     }
   },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/bot.py"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-Requested-With, Content-Type, Accept"
+        }
+      ]
+    }
+  ],
+  "buildCommand": "cd frontend-telegram-webapp && npm install && npm run build",
+  "outputDirectory": "frontend-telegram-webapp/build",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/bot.py"
+      "dest": "/$1"
     }
   ]
 } 
