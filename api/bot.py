@@ -326,7 +326,8 @@ async def webhook():
                     await help_command(update, context)
                 elif text == '/webapp':
                     await webapp_command(update, context)
-                # Add other text command handlers here if any
+                else: # Добавляем обработку для всех остальных текстовых сообщений
+                    await update.message.reply_text("Я могу обрабатывать только команды /start, /help, /webapp, или фотографии пива.")
             elif update.message.photo:
                 await handle_photo(update, context)
             # Add other message types handlers here (e.g., update.message.document)
