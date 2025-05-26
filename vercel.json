@@ -6,6 +6,11 @@
   },
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/api/bot.py",
+      "method": "POST"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/bot.py"
     }
