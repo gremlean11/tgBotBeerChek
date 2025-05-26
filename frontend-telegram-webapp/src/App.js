@@ -54,32 +54,15 @@ function App() {
     }).then(() => handleSearch()); // обновить средний рейтинг
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(',')[1]; // Get base64 string without prefix
-        const payload = {
-          action: 'process_photo',
-          image_base64: base64String
-        };
-        if (window.Telegram && window.Telegram.WebApp) {
-          window.Telegram.WebApp.sendData(JSON.stringify(payload));
-          setMessage('Отправка фото для обработки...');
-        } else {
-          setMessage('Telegram Web App API not available.');
-        }
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setMessage('');
-    }
-  };
-
   const handleProcessPhoto = () => {
-    // Trigger the hidden file input click
-    document.getElementById('photoFile').click();
+    // Send a signal to the bot to indicate readiness for a photo
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.sendData(JSON.stringify({ action: 'ready_for_photo' }));
+      setMessage('Теперь вернитесь в чат с ботом и пришлите фотографию пива.');
+      window.Telegram.WebApp.close(); // Close mini app after sending
+    } else {
+       setMessage('Ошибка: Telegram Web App недоступен.');
+    }
   };
 
   return (
@@ -100,15 +83,7 @@ function App() {
         />
         <button onClick={handleSearch}>Найти</button>
 
-        {/* Hidden file input */}
-        <input
-          type="file"
-          accept="image/*"
-          style={{display: 'none'}}
-          id="photoFile"
-          onChange={handleFileChange}
-        />
-        {/* Button to trigger file input */}
+        {/* Button to trigger photo processing via bot chat */}
         <button onClick={handleProcessPhoto} style={{margin: '10px'}}>Обработать фото пива</button>
 
         {result && (
