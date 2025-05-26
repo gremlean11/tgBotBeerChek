@@ -115,7 +115,7 @@ async def rate_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def webapp_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send a button to open the Telegram Mini App (Web App)."""
     keyboard = [
-        [InlineKeyboardButton("Открыть мини-приложение", web_app={"url": "https://frontend-telegram-webapp-mrnai19ox-egors-projects-55b2ed43.vercel.app"})]
+        [InlineKeyboardButton("Открыть мини-приложение", web_app={"url": "https://frontend-telegram-webapp.vercel.app/"})]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Запусти мини-приложение:", reply_markup=reply_markup)
