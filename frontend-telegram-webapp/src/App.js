@@ -9,7 +9,6 @@ function App() {
   const [rating, setRating] = useState(0);
   const [avgRating, setAvgRating] = useState(null);
   const [message, setMessage] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -58,7 +57,6 @@ function App() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result.split(',')[1]; // Get base64 string without prefix
@@ -75,7 +73,6 @@ function App() {
       };
       reader.readAsDataURL(file);
     } else {
-      setSelectedFile(null);
       setMessage('');
     }
   };
