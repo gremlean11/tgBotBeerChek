@@ -344,4 +344,56 @@ async def webhook():
         #     await update.effective_message.reply_text("Произошла ошибка при обработке вашего запроса.")
 
     # Возвращаем ответ 'ok' Telegram
-    return 'ok' 
+    return 'ok'
+
+# New route for photo uploads from the mini app
+@app.route('/upload_photo', methods=['POST'])
+async def upload_photo():
+    logger.info("Photo upload request received!")
+    try:
+        # Get the photo file from the request
+        if 'photo' not in request.files:
+            logger.error("No photo file in request.")
+            return json.dumps({"status": "error", "message": "No photo file provided."}), 400
+
+        file = request.files['photo']
+        if file.filename == '':
+            logger.error("No selected file.")
+            return json.dumps({"status": "error", "message": "No selected file."}), 400
+
+        # Get user_id from form data
+        user_id = request.form.get('user_id')
+        if not user_id:
+             logger.error("No user_id in form data.")
+             return json.dumps({"status": "error", "message": "User ID not provided."}), 400
+        
+        # Read file bytes
+        image_bytes = file.read()
+
+        # Use existing photo processing logic
+        text = ocr_space_recognize(image_bytes)
+        print(f"[DEBUG] Распознанный текст (OCR.Space) from upload: {repr(text)}")
+
+        beer_info = {}
+        if text.strip():
+            beer_info = get_beer_info(text)
+            # Update rating with user ratings (if applicable)
+            beer_info['rating'] = get_avg_rating(beer_info.get('name', ''), beer_info.get('rating', '-')) # Pass default value for get_avg_rating
+        else:
+             beer_info = {"name": "-", "description": "Не удалось распознать текст.", "rating": "-", "reviews": [], "price_quality_ratio": "-"}
+
+        # Send result back to the user in chat
+        bot = Bot(BOT_TOKEN) # Create a bot instance
+        response_text = format_beer_info(beer_info)
+        # You might want to add inline keyboard for rating here too
+        try:
+             await bot.send_message(chat_id=user_id, text=response_text, parse_mode='MarkdownV2')
+        except Exception as send_e:
+             logger.error(f"Error sending message to user {user_id}: {send_e}")
+             return json.dumps({"status": "error", "message": "Failed to send message to Telegram chat."}), 500
+
+        return json.dumps({"status": "success", "message": "Photo processed and info sent to chat."}), 200
+
+    except Exception as e:
+        logger.error(f"Error processing uploaded photo: {e}")
+        return json.dumps({"status": "error", "message": "Internal server error during photo processing."}), 500 
