@@ -7,11 +7,7 @@
   },
   "rewrites": [
     {
-      "source": "/",
-      "destination": "/api/bot"
-    },
-    {
-      "source": "/api/(.*)",
+      "source": "/api/webhook",
       "destination": "/api/bot"
     }
   ],
