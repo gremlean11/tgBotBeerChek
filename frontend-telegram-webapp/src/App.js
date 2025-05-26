@@ -9,6 +9,7 @@ function App() {
   const [rating, setRating] = useState(0);
   const [avgRating, setAvgRating] = useState(null);
   const [message, setMessage] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -54,6 +55,36 @@ function App() {
     }).then(() => handleSearch()); // обновить средний рейтинг
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result.split(',')[1]; // Get base64 string without prefix
+        const payload = {
+          action: 'process_photo',
+          image_base64: base64String
+        };
+        if (window.Telegram && window.Telegram.WebApp) {
+          window.Telegram.WebApp.sendData(JSON.stringify(payload));
+          setMessage('Отправка фото для обработки...');
+        } else {
+          setMessage('Telegram Web App API not available.');
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setSelectedFile(null);
+      setMessage('');
+    }
+  };
+
+  const handleProcessPhoto = () => {
+    // Trigger the hidden file input click
+    document.getElementById('photoFile').click();
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -71,6 +102,18 @@ function App() {
           style={{margin: '10px', padding: '5px'}}
         />
         <button onClick={handleSearch}>Найти</button>
+
+        {/* Hidden file input */}
+        <input
+          type="file"
+          accept="image/*"
+          style={{display: 'none'}}
+          id="photoFile"
+          onChange={handleFileChange}
+        />
+        {/* Button to trigger file input */}
+        <button onClick={handleProcessPhoto} style={{margin: '10px'}}>Обработать фото пива</button>
+
         {result && (
           <div style={{marginTop: 20, background: '#222', padding: 16, borderRadius: 8}}>
             <h2>{result.name}</h2>
